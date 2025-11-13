@@ -1,0 +1,107 @@
+             # ---> Python
+
+# Скомпилированные файлы Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Директории сборки и дистрибуции
+build/
+dist/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Виртуальные окружения
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Кэш и временные файлы
+*.log
+*.pot
+*.tmp
+*.temp
+*.cache
+.cache/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Конфигурационные файлы IDE и редакторов
+# VSCode
+.vscode/
+# PyCharm
+.idea/
+# Sublime
+*.sublime-project
+*.sublime-workspace
+
+# Тестовые отчеты
+.coverage
+.tox/
+.nox/
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+htmlcov/
+.cache/
+pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# mypy, pylint, pyright и другие анализаторы
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+ruff_cache/
+.pyright/
+
+# Django / Flask / FastAPI и другие фреймворки
+*.log
+local_settings.py
+db.sqlite3
+instance/
+.webassets-cache
+
+# Секреты и конфиги
+*.env
+*.ini
+*.cfg
+*.json
+*.yaml
+*.yml
+
+# Docker
+docker-compose.override.yml
+.env.docker
+
+# VSCode, JetBrains и др. IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+desktop.ini
