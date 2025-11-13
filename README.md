@@ -2,7 +2,8 @@
 ## Appendix
 В рамках участия в буткемпе мы работаем над задачей с МАС. Наше решение по [задаче](https://drive.google.com/drive/folders/1VSLjJX7O18SzAPg_ICCAa-WU2JrUKjw5)
 ## Architecture
-![5237951121760914960](https://github.com/user-attachments/assets/37e9da28-940b-48e1-a15e-71f1ee4dc641)
+![5237917530821692669](https://github.com/user-attachments/assets/44ecb2b8-ce8e-4137-b16b-6ee8b557b1df)
+
 
 ## How to start
 
