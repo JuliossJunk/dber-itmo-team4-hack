@@ -6,6 +6,18 @@
 
 
 ## How to start
+1. Склонируйте проект с гита.
+    ``` bash
+       git clone https://github.com/JuliossJunk/dber-itmo-team4-hack
+    ```
+2. Запустите установку зависимостей:
+    ```bash
+    poetry install
+    ```
+3. Запустите сервер чата.
+    ```bash
+    streamlit run app/app.py
+    ```
 
 ## FAQ
 Профессионально стреляем по мухе из ружья
