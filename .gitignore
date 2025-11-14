@@ -1,5 +1,3 @@
-             # ---> Python
-
 # Скомпилированные файлы Python
 __pycache__/
 *.py[cod]
@@ -105,3 +103,4 @@ docker-compose.override.yml
 .DS_Store
 Thumbs.db
 desktop.ini
+poetry.lock
