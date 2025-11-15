@@ -251,7 +251,7 @@ synthesizer_runnable = create_runnable(
 def synthesizer_node(state: AgentState) -> AgentState:
     synthesis_input = f"""
     Verified Facts: {state['verified_facts']}
-    Counter-Arguments: {state['counter_arguments']}
+    Counter-Arguments: {state.get('counter_arguments', {})}
 
     Provide a balanced answer that considers both the verified facts and counter-arguments.
     """
