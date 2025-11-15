@@ -236,7 +236,7 @@ def counter_argument_node(state: AgentState) -> AgentState:
         else:
             counter_data[cq] = result.content
 
-    state["counter_arguments"].update(counter_data)
+    state.get("counter_arguments", {}).update(counter_data)
     state["messages"] += [AIMessage(content="Counter-arguments collected")]
     return state
 
