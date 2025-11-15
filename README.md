@@ -23,6 +23,7 @@
 
 
 ## How to start
+### Базовый запуск на linux/mac
 1. Склонируйте проект с гита.
     ``` bash
        git clone https://github.com/JuliossJunk/dber-itmo-team4-hack
@@ -42,8 +43,26 @@
     ```
 4. Запустите сервер чата.
     ```bash
-    streamlit run app/app.py
+    streamlit run app/server.py
     ```
+### Запуск на докере
+1. Склонируйте проект с гита.
+    ``` bash
+       git clone https://github.com/JuliossJunk/dber-itmo-team4-hack
+    ```
+2. Создайте файл `.env` на основе `.env.example` и добавьте ваши API ключи:
+    ```bash
+    cp .env.example .env
+    ```
+    Отредактируйте `.env`:
+    ```
+    MAIN_LLM_KEY=your_main_llm_api_key_here
+    DEEPSEEK_API_KEY=your_deepseek_api_key_here
+    ```
+3. Запускаем Docker compose
+   ``` bash
+       docker compose up -d
+   ```
 
 ## FAQ
 Профессионально стреляем по мухе из ружья
