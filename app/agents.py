@@ -4,12 +4,13 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 from langchain_community.tools import DuckDuckGoSearchRun
 from langchain_core.tools import Tool
+from vectorstore import cache_get, cache_set, cache_search
 import requests
 from bs4 import BeautifulSoup
 import os
 from dotenv import load_dotenv
 
-from app.prompts import runnable_prompt, simple_prompt, analyzer_prompt, retriever_prompt, checker_prompt, \
+from prompts import runnable_prompt, simple_prompt, analyzer_prompt, retriever_prompt, checker_prompt, \
     counter_prompt, synthesizer_prompt
 
 load_dotenv()
@@ -107,7 +108,7 @@ analyzer_runnable = create_runnable(
 
 def analyzer_node(state: AgentState) -> AgentState:
     result = analyzer_runnable.invoke({"input": state["query"], "agent_scratchpad": []})
-    sub_queries = [q.strip() for q in result.content.split("\n") if q.strip()]  # Improved parsing
+    sub_queries = [q.strip() for q in result.content.split("\n") if q.strip()]
     state["sub_queries"] += sub_queries
     state["messages"] += [AIMessage(content=result.content)]
     return state
@@ -123,12 +124,21 @@ retriever_runnable = create_runnable(
 def retriever_node(state: AgentState) -> AgentState:
     data = {}
     for sq in state["sub_queries"]:
+
+        collected = []
+        cached_results = cache_search(sq)
+
+        if cached_results:
+            formatted = [
+                f"[CACHED FACT] {r['facts']} (source: {r['source']}, date: {r['date']})"
+                for r in cached_results
+            ]
+            collected.extend(formatted)
         result = retriever_runnable.invoke({
             "input": sq,
             "agent_scratchpad": state["messages"]
         })
 
-        collected = []
         if hasattr(result, 'tool_calls') and result.tool_calls:
             for tc in result.tool_calls:
                 tool_name = tc['name']
@@ -137,10 +147,11 @@ def retriever_node(state: AgentState) -> AgentState:
                     collected.append(search_tool.run(tool_args['query']))
                 elif tool_name == 'scrape_page':
                     collected.append(scrape_tool.func(tool_args['url']))
-
         else:
             collected.append(result.content)
+
         data[sq] = collected
+
     state["data"].update(data)
     state["messages"] += [AIMessage(content="Data retrieved")]
     return state
@@ -154,21 +165,41 @@ checker_runnable = create_runnable(
 
 
 def checker_node(state: AgentState) -> AgentState:
-    result = checker_runnable.invoke({"input": f"Verify: {state['data']}", "agent_scratchpad": state["messages"]})
+    query = state["query"]
+
+    cached = cache_get(query)
+    if cached:
+        state["verified_facts"] = {"facts": cached["facts"], "source": cached["source"], "cached": True}
+        state["messages"] += [AIMessage(content=f"Cached fact used from {cached['date']}")]
+        return state
+
+    result = checker_runnable.invoke(
+        {"input": f"Verify: {state['data']}", "agent_scratchpad": state["messages"]}
+    )
+
     if hasattr(result, 'tool_calls') and result.tool_calls:
         tool_outputs = []
+        used_source = ""
         for tc in result.tool_calls:
             if tc['name'] == 'duckduckgo_search':
-                output = search_tool.run(tc['args']['query'])
+                q = tc['args']['query']
+                output = search_tool.run(q)
                 tool_outputs.append(output)
+                used_source = q
         verification = "\n".join(tool_outputs)
     else:
         verification = result.content
+        used_source = "unknown"
+
     if "needs_more" in verification.lower():
         state["messages"] += [AIMessage(content="Needs more data")]
-    else:
-        state["verified_facts"].update({"facts": verification})
-        state["messages"] += [AIMessage(content=verification)]
+        return state
+
+    state["verified_facts"].update({"facts": verification, "source": used_source})
+    state["messages"] += [AIMessage(content=verification)]
+
+    cache_set(query, verification, used_source)
+
     return state
 
 
@@ -180,7 +211,6 @@ counter_argument_runnable = create_runnable(
 
 
 def counter_argument_node(state: AgentState) -> AgentState:
-    # Формируем запросы для поиска контраргументов
     query = state["query"]
     facts = state["verified_facts"]
     counter_queries = [
