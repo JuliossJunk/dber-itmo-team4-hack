@@ -87,7 +87,6 @@ instance/
 *.cfg
 *.json
 *.yaml
-*.yml
 
 # Docker
 docker-compose.override.yml

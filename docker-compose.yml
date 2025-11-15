@@ -1,0 +1,31 @@
+services:
+  chroma:
+    image: chromadb/chroma:latest
+    container_name: chroma_service
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+
+  app:
+    build: .
+    container_name: streamlit_app
+    depends_on:
+      - chroma
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - CHROMA_HOST=chroma
+      - CHROMA_PORT=8000
+    command: >
+      streamlit run app/server.py
+      --server.address=0.0.0.0
+
+volumes:
+  chroma_data:
