@@ -2,7 +2,6 @@
 name = "sber-project-hack"
 version = "0.1.1"
 description = "Opensource project on Sber Itmo Bootcamp from team 4"
-readme = "README.md"
 requires-python = ">=3.12,<4.0.0"
 dependencies = [
     "streamlit (>=1.51.0,<2.0.0)",
