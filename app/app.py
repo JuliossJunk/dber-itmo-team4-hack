@@ -1,5 +1,5 @@
 import streamlit as st
-from mas import graph
+from orchestrator import graph
 from langchain_core.messages import HumanMessage
 from uuid import uuid4
 
