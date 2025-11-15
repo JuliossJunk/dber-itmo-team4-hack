@@ -6,17 +6,18 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-ENV POETRY_VERSION=1.8.3
+ENV POETRY_VERSION=2.2.1
 RUN pip install "poetry==$POETRY_VERSION"
 
 ENV POETRY_VIRTUALENVS_CREATE=false
 
 WORKDIR /app
+COPY README.md .
 COPY pyproject.toml poetry.lock ./
 COPY app ./app/
 COPY .env .env
 
-RUN poetry install --no-interaction --no-ansi
+RUN poetry install --no-interaction --no-ansi --no-root
 
 EXPOSE 8501
 
